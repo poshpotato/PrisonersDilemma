@@ -13,15 +13,14 @@ import java.util.Random;
 public class Player {
     int score = 0;
     String getType(){return "bananapotato";};
-    Boolean lastAction; //so opponent can respond.
-    
+    ArrayList<Boolean> actions;//so opponent can respond.
     Player(){
-    
+        this.actions = new ArrayList();
     }
     //
     Player(Player toCopy){
         this.score = toCopy.score;
-        this.lastAction = toCopy.lastAction;
+        this.actions = toCopy.actions;
     }
     
 
@@ -31,14 +30,14 @@ public class Player {
         playerList.add(new Cooperator());
         playerList.add(new Copycat());
     }
-    Boolean checkBetray(Player opponent){ //will override.
+    Boolean checkBetray(Player opponent, int round){ //will override.
         return true;
     }
 
     static Player genPlayer(){
         //this function should return a random-strategy player for use in the game
         Player copy = new Player();
-        switch (new Random().nextInt(playerList.size())){
+        switch (new Random().nextInt(3)){
             case 0 : 
                 copy = new Cheater();
                 break;
@@ -48,7 +47,6 @@ public class Player {
             case 2 : 
                 copy = new Copycat();
                 break;
-                
         }
         
         return copy;
@@ -75,27 +73,27 @@ public class Player {
 }
 
 class Cheater extends Player {
-    Boolean checkBetray(Player opponent) {
+    Boolean checkBetray(Player opponent, int round) {
         return true; //cheater always cheats;
     }
     String getType(){return "Cheater";};
 }
 
 class Cooperator extends Player {
-    Boolean checkBetray(Player opponent) {
+    Boolean checkBetray(Player opponent, int round) {
         return false; //cooperator always cooperates;
     }
     String getType(){return "Cooperator";};
 }
 
 class Copycat extends Player {
-    Boolean checkBetray(Player opponent) {
-        if(opponent.lastAction != null){
-            return opponent.lastAction; //copy opponent
+    Boolean checkBetray(Player opponent, int round) {
+        if(round != 0){
+            return opponent.actions.get(round-1); //copy opponent
         } else {
             return false;
+            //always start with good faith.
         }
     }
     String getType(){return "Copycat";};
-
 }

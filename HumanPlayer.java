@@ -19,7 +19,7 @@ public class HumanPlayer extends Player
         this.input = new Scanner(System.in);
     }
     
-    Boolean checkBetray(Player opponent) {
+    Boolean checkBetray(Player opponent, int round) {
         System.out.println(name + ", Will you betray? Y/N");
         String choice = input.nextLine().toLowerCase();
         if(choice.equals("y")){
@@ -28,7 +28,7 @@ public class HumanPlayer extends Player
             return false;
         } else{
             System.out.println("Error: Please enter only y or n");
-            this.checkBetray(opponent);
+            this.checkBetray(opponent, round);
         }
         return true;
     }

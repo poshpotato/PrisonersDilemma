@@ -14,7 +14,9 @@ public class GameController {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Player.init();
-        startGame(Player.genPlayer(), Player.genPlayer(), pNum);
+        for(int i = 0; i<20; i++){
+            startGame(Player.genPlayer(), Player.genPlayer(), 5);
+        }
         //while(!exit){
             //takeCommand();
         //}
@@ -22,18 +24,20 @@ public class GameController {
 
     static void startGame(Player p1, Player p2, int rounds){
         System.out.println("Game is " + p1.getType() + " vs " + p2.getType() + ".");
+        int round = 0;
         for(int i = 0; i<rounds; i++){
-            playRound(p1, p2);
+            playRound(p1, p2, round);
+            round++;
         }
     }
 
-    static void playRound(Player p1, Player p2){
-        Boolean p1betray = p1.checkBetray(p2);
-        Boolean p2betray = p2.checkBetray(p1);
+    static void playRound(Player p1, Player p2, int round){
+        Boolean p1betray = p1.checkBetray(p2, round);
+        Boolean p2betray = p2.checkBetray(p1, round);
         
         //Make sure lastAction is set AFTER they decide whether to betray
-        p1.lastAction = p1betray;
-        p2.lastAction = p2betray;
+        p1.actions.add(p1betray);
+        p2.actions.add(p2betray);
         
         
         if(p1betray == true && p2betray == true){
