@@ -28,9 +28,8 @@ public class HumanPlayer extends Player
             return false;
         } else{
             System.out.println("Error: Please enter only y or n");
-            this.checkBetray(opponent, round);
+            return this.checkBetray(opponent, round);
         }
-        return true;
     }
     
     String getType(){return name;}

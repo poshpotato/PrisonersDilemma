@@ -1,0 +1,8 @@
+rounds:15
+randomRounds:false
+opponentType:copycat
+randomOpponent:true
+humanPlayer:false
+#this is a comment. also, underneath this line is tournament stuff
+tournamentMode:true
+tournamentPlayers:10
