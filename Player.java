@@ -15,7 +15,7 @@ public class Player {
     String getType(){return "bananapotato";};
     ArrayList<Boolean> actions;//so opponent can respond.
     Player(){
-        this.actions = new ArrayList();
+        this.actions = new ArrayList<Boolean>();
     }
     //
     Player(Player toCopy){

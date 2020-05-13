@@ -13,7 +13,9 @@ public class GameController {
     static boolean humanPlayer = false;
     static boolean randomRounds = true;
     static boolean tournamentMode = false;
+    static boolean silent = true;
     static int rounds = 5;
+    static int tournamentPlayers = 10;
     static Player opponent;
     static HashMap<String, String> settings = new HashMap<String,String>();
     
@@ -21,7 +23,6 @@ public class GameController {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Player.init();
-       
         readOptions();
         System.out.println(rounds);
         if(!tournamentMode){
@@ -35,12 +36,19 @@ public class GameController {
                 }
             }
         } else{
-            
+            ArrayList<Player> players  = new ArrayList<Player>();
+            for(int i=0; i<tournamentPlayers; i++){
+                players.add(i, Player.genPlayer());
+            }
+            playTournamentRound(players);
         }
     }
 
     static void startGame(Player p1, Player p2, int rounds){
-        System.out.println("Game is " + p1.getType() + " vs " + p2.getType() + ".");
+        if(!silent)System.out.println("Game is " + p1.getType() + " vs " + p2.getType() + ".");
+        //make sure to reset actions each game
+        p1.actions = new ArrayList<Boolean>();
+        p2.actions = new ArrayList<Boolean>();
         int round = 0;
         for(int i = 0; i<rounds; i++){
             playRound(p1, p2, round);
@@ -62,33 +70,63 @@ public class GameController {
                 //if both betray
                 p1.score -= 3;
                 p2.score -= 3;
-                System.out.println("Both players betrayed.");
+                if(!silent)System.out.println("Both players betrayed.");
             } else{
                 //if p1 betrays
                 p1.score += 2;
                 p2.score -= 5;
-                System.out.println(p1.getType() + " Betrayed, but " + p2.getType() + " did not.");
+                if(!silent)System.out.println(p1.getType() + " Betrayed, but " + p2.getType() + " did not.");
             }
         }else{
             if(p2betray){
                 //if p2 betrays
                 p1.score -= 5;
                 p2.score += 2;
-                System.out.println(p2.getType() + " Betrayed, but " + p1.getType() + " did not.");
+                if(!silent)System.out.println(p2.getType() + " Betrayed, but " + p1.getType() + " did not.");
             } else{
                 //if neither betray
                 p1.score += 1;
                 p2.score += 1;
-                System.out.println("Both players co-operated.");
+                if(!silent)System.out.println("Both players co-operated.");
             }
         }
-        System.out.println(p1.getType() + " Score = " + p1.score + ".");
-        System.out.println(p2.getType() + " Score = " + p2.score + ".");
+        if(!silent)System.out.println(p1.getType() + " Score = " + p1.score + ".");
+        if(!silent)System.out.println(p2.getType() + " Score = " + p2.score + ".");
     }
     
-    static void playTournamentRound(){
-        ArrayList<Player> players  = new ArrayList<Player>();
-        
+    static void playTournamentRound(ArrayList<Player> players){
+        System.out.println("actual players :" + players.size());
+        for(int i=0; i<players.size(); i++){
+            for(int j=0; j<players.size(); j++){
+                //is the player ahead of me?
+                if(!(j <= i)){
+                    //if so, fight them
+                    System.out.println("player "+i+" against player "+j );
+                    startGame(players.get(i), players.get(j), rounds);
+                }
+                //if not, don't.
+            }
+        }
+        //after round is played, print results.
+        //but first: sorting. selection sort seems suited.
+        //run it a number of times equal to the number of elements
+        ArrayList<Player> sortedPlayers = new ArrayList<Player>();
+        for (int i = 0; i < players.size() - 1; i++)  
+        {  
+            int index = i;  
+            for (int j = i + 1; j < players.size(); j++){  
+                if (players.get(j).score < players.get(index).score){  
+                    index = j;//searching for lowest index  
+                }  
+            }  
+            Player smallerScore = players.get(index);   
+            players.set(index, players.get(i));  
+            players.set(i, smallerScore);  
+        }  
+        for(Player p:players){
+            System.out.println(p.getType());
+            System.out.println(p.score);
+        }
     }
     
     static void readOptions(){
@@ -97,16 +135,22 @@ public class GameController {
             Scanner fileRead = new Scanner(file);
             while(fileRead.hasNextLine()){
                 String[] chunkedLine = fileRead.nextLine().split(":");
+                System.out.println(Arrays.toString(chunkedLine));
                 if(chunkedLine[0].charAt(0) != '#'){
                     settings.put(chunkedLine[0], chunkedLine[1]);
                 }
             }
             if(settings.get("rounds") != null)rounds = Integer.parseInt(settings.get("rounds"));
-            System.out.println(rounds);
+            System.out.println("Rounds: " +rounds);
             if(settings.get("humanPlayer") != null)humanPlayer = Boolean.parseBoolean(settings.get("humanPlayer"));
-            System.out.println(humanPlayer);
+            System.out.println("humanPlayer: " +humanPlayer);
             if(settings.get("randomRounds") != null) randomRounds = Boolean.parseBoolean(settings.get("randomRounds"));
-            System.out.println(randomRounds);
+            System.out.println("randomRounds :" + randomRounds);
+            
+            if(settings.get("tournamentMode") != null) tournamentMode = Boolean.parseBoolean(settings.get("tournamentMode"));
+            System.out.println("tournamentMode :" +tournamentMode);
+            if(settings.get("tournamentPlayers") != null)  tournamentPlayers = Integer.parseInt(settings.get("tournamentPlayers"));
+            System.out.println("tournamentPlayers :" +tournamentPlayers);
         }catch (IOException e){
             System.out.println("Error reading config: " + e.toString());
         }
