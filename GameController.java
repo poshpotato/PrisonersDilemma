@@ -109,7 +109,7 @@ public class GameController {
         }
         //after round is played, print results.
         //but first: sorting. selection sort seems suited.
-        //run it a number of times equal to the number of elements
+        /*run it a number of times equal to the number of elements
         ArrayList<Player> sortedPlayers = new ArrayList<Player>();
         for (int i = 0; i < players.size() - 1; i++)  
         {  
@@ -122,10 +122,19 @@ public class GameController {
             Player smallerScore = players.get(index);   
             players.set(index, players.get(i));  
             players.set(i, smallerScore);  
-        }  
+        }*/
+        //Bubble sort
+        for(int i = 0; i < players.size(); i++){
+            for(int j = 1; j < players.size()-i; j++){
+                if(players.get(j).score > players.get(j-1).score){
+                    Player temp = players.get(j);
+                    players.set(j, players.get(j-1));
+                    players.set(j-1, temp);
+                }
+            }
+        }
         for(Player p:players){
-            System.out.println(p.getType());
-            System.out.println(p.score);
+            System.out.println(p.getType() + ", " + p.score);
         }
     }
     
