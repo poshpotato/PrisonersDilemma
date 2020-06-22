@@ -13,7 +13,7 @@ public class GameController {
     static boolean humanPlayer = false;
     static boolean randomRounds = true;
     static boolean tournamentMode = false;
-    static boolean silent = true;
+    static boolean silent = false;
     static int rounds = 5;
     static int tournamentPlayers = 10;
     static Player opponent;
@@ -26,9 +26,15 @@ public class GameController {
         readOptions();
         System.out.println(rounds);
         if(!tournamentMode){
-            if(humanPlayer == true){
+            
+            if(humanPlayer == true && opponent == null){
                 System.out.println("Please enter name:");
                 String name = input.nextLine();
+                if(  !=null){
+                    try{
+                        
+                    }
+                }
                 startGame(new HumanPlayer(name), Player.genPlayer(), rounds);
             }else{
                 for(int i = 0; i<1; i++){
@@ -50,6 +56,7 @@ public class GameController {
         p1.actions = new ArrayList<Boolean>();
         p2.actions = new ArrayList<Boolean>();
         int round = 0;
+        if(randomRounds != null) rounds = new Random().nextInt(10);
         for(int i = 0; i<rounds; i++){
             playRound(p1, p2, round);
             round++;
@@ -160,6 +167,9 @@ public class GameController {
             System.out.println("tournamentMode :" +tournamentMode);
             if(settings.get("tournamentPlayers") != null)  tournamentPlayers = Integer.parseInt(settings.get("tournamentPlayers"));
             System.out.println("tournamentPlayers :" +tournamentPlayers);
+            if(settings.get("verbose") != null) silent = Boolean.parseBoolean(settings.get("verbose"));
+            System.out.println("verbose :" + silent);
+            if(settings.get("opponentType" != null)) opponent = Player.genPlayerFromString(settings.get("opponentType"));
         }catch (IOException e){
             System.out.println("Error reading config: " + e.toString());
         }

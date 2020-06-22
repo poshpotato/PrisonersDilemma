@@ -1,8 +1,8 @@
 rounds:15
-randomRounds:false
+randomRounds:true
 opponentType:copycat
 randomOpponent:true
-humanPlayer:false
+humanPlayer:true
 #this is a comment. also, underneath this line is tournament stuff
-tournamentMode:true
+tournamentMode:false
 tournamentPlayers:10
