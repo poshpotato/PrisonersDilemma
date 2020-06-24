@@ -16,7 +16,7 @@ public class GameController {
     static boolean silent = false;
     static int rounds = 5;
     static int tournamentPlayers = 10;
-    static Player opponent;
+    static Player opponent = Player.genPlayer();
     static HashMap<String, String> settings = new HashMap<String,String>();
     
 
@@ -27,19 +27,13 @@ public class GameController {
         System.out.println(rounds);
         if(!tournamentMode){
             
-            if(humanPlayer == true && opponent == null){
+            if(humanPlayer == true){
                 System.out.println("Please enter name:");
                 String name = input.nextLine();
-                if(  !=null){
-                    try{
-                        
-                    }
-                }
-                startGame(new HumanPlayer(name), Player.genPlayer(), rounds);
+                startGame(new HumanPlayer(name), opponent, rounds);
+                
             }else{
-                for(int i = 0; i<1; i++){
-                    startGame(Player.genPlayer(), Player.genPlayer(), rounds);
-                }
+                startGame(Player.genPlayer(), Player.genPlayer(), rounds);
             }
         } else{
             ArrayList<Player> players  = new ArrayList<Player>();
@@ -56,10 +50,14 @@ public class GameController {
         p1.actions = new ArrayList<Boolean>();
         p2.actions = new ArrayList<Boolean>();
         int round = 0;
-        if(randomRounds != null) rounds = new Random().nextInt(10);
+        if(randomRounds == true) rounds = new Random().nextInt(10);
         for(int i = 0; i<rounds; i++){
             playRound(p1, p2, round);
             round++;
+        }
+        System.out.println("Game over.");
+        if(p1.score > p2.score){
+            System.out.println(p1.getType() + " won!");
         }
     }
 
@@ -82,14 +80,20 @@ public class GameController {
                 //if p1 betrays
                 p1.score += 2;
                 p2.score -= 5;
-                if(!silent)System.out.println(p1.getType() + " Betrayed, but " + p2.getType() + " did not.");
+                if(!silent){
+                    System.out.print(p1.getType() + " Betrayed, but ");
+                    if(humanPlayer){System.out.println("The Opponent did not");}  else {System.out.println(p2.getType() + " did not.");}
+                }
             }
         }else{
             if(p2betray){
                 //if p2 betrays
                 p1.score -= 5;
                 p2.score += 2;
-                if(!silent)System.out.println(p2.getType() + " Betrayed, but " + p1.getType() + " did not.");
+                if(!silent){
+                    if(humanPlayer){System.out.print("The Opponent");} else{System.out.print(p2.getType());}
+                    System.out.println(" Betrayed, but " + p1.getType() + " did not.");
+                }
             } else{
                 //if neither betray
                 p1.score += 1;
@@ -156,6 +160,7 @@ public class GameController {
                     settings.put(chunkedLine[0], chunkedLine[1]);
                 }
             }
+            Boolean randomOpponent = true;
             if(settings.get("rounds") != null)rounds = Integer.parseInt(settings.get("rounds"));
             System.out.println("Rounds: " +rounds);
             if(settings.get("humanPlayer") != null)humanPlayer = Boolean.parseBoolean(settings.get("humanPlayer"));
@@ -168,8 +173,14 @@ public class GameController {
             if(settings.get("tournamentPlayers") != null)  tournamentPlayers = Integer.parseInt(settings.get("tournamentPlayers"));
             System.out.println("tournamentPlayers :" +tournamentPlayers);
             if(settings.get("verbose") != null) silent = Boolean.parseBoolean(settings.get("verbose"));
+            silent = !silent;
             System.out.println("verbose :" + silent);
-            if(settings.get("opponentType" != null)) opponent = Player.genPlayerFromString(settings.get("opponentType"));
+            if(settings.get("randomOpponent") != null) randomOpponent = Boolean.parseBoolean(settings.get("randomOpponent"));
+            System.out.println("randomOpponent :" + randomOpponent);
+            if(settings.get("opponentType") != null && randomOpponent){
+                opponent = Player.genPlayerFromString(settings.get("opponentType"));
+                System.out.println("opponent :" + opponent);
+            }
         }catch (IOException e){
             System.out.println("Error reading config: " + e.toString());
         }

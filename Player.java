@@ -37,7 +37,7 @@ public class Player {
     static Player genPlayer(){
         //this function should return a random-strategy player for use in the game
         Player copy = new Player();
-        switch (new Random().nextInt(3)){
+        switch (new Random().nextInt(4)){
             case 0 : 
                 copy = new Cheater();
                 break;
@@ -47,8 +47,12 @@ public class Player {
             case 2 : 
                 copy = new Copycat();
                 break;
+            case 3 :
+                copy = new Checker();
+                break;
+            default :
+                copy = Player.genPlayer();
         }
-        
         return copy;
     }
     
@@ -64,8 +68,12 @@ public class Player {
             case "copycat" :
                 p = new Copycat();
                 break;
+            case "checker" :
+                p = new Copycat();
+                break;
             default :
-                System.out.println("Invalid playerType: \"" + from + "\"");
+                p = Player.genPlayer();
+                System.out.println("Invalid playerType: \"" + from + "\". Generating random player.");
                 break;
         }
         return p;
@@ -93,6 +101,22 @@ class Copycat extends Player {
         } else {
             return false;
             //always start with good faith.
+        }
+    }
+    String getType(){return "Copycat";};
+}
+//the checker probes you with a cheat to see whether you'll reciprocate, to decide what it should do.
+class Checker extends Player {
+    Boolean cheated = false;
+    Boolean checkBetray(Player opponent, int round) {
+        if(round == 0 || round == 2 || round == 3){
+            return false; //testing
+        } else if(round == 1) {
+            return true;//more testing
+        } else if(opponent.actions.contains(true)) {
+            return false; //lets try to cooperate
+        } else {
+            return true; //bleed them for all they're worth
         }
     }
     String getType(){return "Copycat";};

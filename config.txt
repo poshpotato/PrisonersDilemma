@@ -1,8 +1,15 @@
 rounds:15
-randomRounds:true
+verbose:true
+randomRounds:false
+#opponent types: 
+#cheater
+#cooperator
+#copycat
+#checker
 opponentType:copycat
-randomOpponent:true
+randomOpponent:false
 humanPlayer:true
 #this is a comment. also, underneath this line is tournament stuff
+#tournament mode overrides other settings
 tournamentMode:false
 tournamentPlayers:10
