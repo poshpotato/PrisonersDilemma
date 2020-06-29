@@ -23,13 +23,6 @@ public class Player {
         this.actions = toCopy.actions;
     }
     
-
-    static List<Player> playerList = new ArrayList<Player>();
-    static void init() {
-        playerList.add(new Cheater());
-        playerList.add(new Cooperator());
-        playerList.add(new Copycat());
-    }
     Boolean checkBetray(Player opponent, int round){ //will override.
         return true;
     }

@@ -9,7 +9,7 @@ import java.util.*;
 import java.io.*;
 
 public class GameController {
-    static Scanner input = new Scanner(System.in);
+    //default settings, defaulted to if there's a problem with file reading
     static boolean humanPlayer = false;
     static boolean randomRounds = true;
     static boolean tournamentMode = false;
@@ -22,18 +22,17 @@ public class GameController {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        Player.init();
         readOptions();
         System.out.println(rounds);
         if(!tournamentMode){
-            
             if(humanPlayer == true){
-                System.out.println("Please enter name:");
-                String name = input.nextLine();
-                startGame(new HumanPlayer(name), opponent, rounds);
+               //If its a human player make sure to name them first
                 
+               System.out.println("Please enter name:");
+               String name = input.nextLine();
+               startGame(new HumanPlayer(name), opponent, rounds);
             }else{
-                startGame(Player.genPlayer(), Player.genPlayer(), rounds);
+               startGame(Player.genPlayer(), Player.genPlayer(), rounds);
             }
         } else{
             ArrayList<Player> players  = new ArrayList<Player>();
