@@ -12,7 +12,8 @@ import java.util.Random;
 
 public class Player {
     int score = 0;
-    String getType(){return "bananapotato";};
+    Boolean anonymous = false;
+    String getType(){if(!anonymous){return "bananapotato"; }else {return "Opponent";}};
     ArrayList<Boolean> actions;//so opponent can respond.
     Player(){
         this.actions = new ArrayList<Boolean>();
@@ -27,7 +28,7 @@ public class Player {
         return true;
     }
 
-    static Player genPlayer(){
+    static Player genPlayer(Boolean anonymous){
         //this function should return a random-strategy player for use in the game
         Player copy = new Player();
         switch (new Random().nextInt(4)){
@@ -44,8 +45,9 @@ public class Player {
                 copy = new Checker();
                 break;
             default :
-                copy = Player.genPlayer();
+                copy = Player.genPlayer(anonymous);
         }
+        copy.anonymous = anonymous;
         return copy;
     }
     
@@ -61,11 +63,15 @@ public class Player {
             case "copycat" :
                 p = new Copycat();
                 break;
+                
+                
+                
+                
             case "checker" :
                 p = new Copycat();
                 break;
             default :
-                p = Player.genPlayer();
+                p = Player.genPlayer(false);
                 System.out.println("Invalid playerType: \"" + from + "\". Generating random player.");
                 break;
         }
@@ -77,14 +83,14 @@ class Cheater extends Player {
     Boolean checkBetray(Player opponent, int round) {
         return true; //cheater always cheats;
     }
-    String getType(){return "Cheater";};
+    String getType(){if(!anonymous){return "Cheater"; }else {return "Opponent";}};
 }
 
 class Cooperator extends Player {
     Boolean checkBetray(Player opponent, int round) {
         return false; //cooperator always cooperates;
     }
-    String getType(){return "Cooperator";};
+    String getType(){if(!anonymous){return "Cooperator"; }else {return "Opponent";}};
 }
 
 class Copycat extends Player {
@@ -96,11 +102,10 @@ class Copycat extends Player {
             //always start with good faith.
         }
     }
-    String getType(){return "Copycat";};
+    String getType(){if(!anonymous){return "bananapotato"; }else {return "Copycat";}};
 }
 //the checker probes you with a cheat to see whether you'll reciprocate, to decide what it should do.
 class Checker extends Player {
-    Boolean cheated = false;
     Boolean checkBetray(Player opponent, int round) {
         if(round == 0 || round == 2 || round == 3){
             return false; //testing
@@ -112,5 +117,5 @@ class Checker extends Player {
             return true; //bleed them for all they're worth
         }
     }
-    String getType(){return "Copycat";};
+    String getType(){if(!anonymous){return "bananapotato"; }else {return "Opponent";}};
 }

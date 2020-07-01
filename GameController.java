@@ -1,4 +1,3 @@
-
 /**
  * Write a description of class GameController here.
  *
@@ -16,7 +15,7 @@ public class GameController {
     static boolean silent = false;
     static int rounds = 5;
     static int tournamentPlayers = 10;
-    static Player opponent = Player.genPlayer();
+    static Player opponent = Player.genPlayer(true);
     static HashMap<String, String> settings = new HashMap<String,String>();
     
 
@@ -32,17 +31,22 @@ public class GameController {
                String name = input.nextLine();
                startGame(new HumanPlayer(name), opponent, rounds);
             }else{
-               startGame(Player.genPlayer(), Player.genPlayer(), rounds);
+                //if non human, always randomise both players.
+               startGame(Player.genPlayer(false), Player.genPlayer(false), rounds);
             }
         } else{
+            
+            //this generates a list of players for the tournament round to use.
             ArrayList<Player> players  = new ArrayList<Player>();
             for(int i=0; i<tournamentPlayers; i++){
-                players.add(i, Player.genPlayer());
+                players.add(i, Player.genPlayer(false));
             }
             playTournamentRound(players);
         }
     }
-
+    
+    
+    //This method resets and counts down the rounds until the end.
     static void startGame(Player p1, Player p2, int rounds){
         if(!silent)System.out.println("Game is " + p1.getType() + " vs " + p2.getType() + ".");
         //make sure to reset actions each game
@@ -55,11 +59,17 @@ public class GameController {
             round++;
         }
         System.out.println("Game over.");
+        
+        //print who won
         if(p1.score > p2.score){
             System.out.println(p1.getType() + " won!");
+        } else if (p2.score > p1.score){
+            System.out.println(p2.getType() + " won!");
         }
     }
-
+    
+    
+    //this method checks what each player does and scores them acccordingly
     static void playRound(Player p1, Player p2, int round){
         Boolean p1betray = p1.checkBetray(p2, round);
         Boolean p2betray = p2.checkBetray(p1, round);
@@ -104,6 +114,7 @@ public class GameController {
         if(!silent)System.out.println(p2.getType() + " Score = " + p2.score + ".");
     }
     
+    //This method makes sure that all the players fight each other once, and only once
     static void playTournamentRound(ArrayList<Player> players){
         System.out.println("actual players :" + players.size());
         for(int i=0; i<players.size(); i++){
@@ -118,21 +129,6 @@ public class GameController {
             }
         }
         //after round is played, print results.
-        //but first: sorting. selection sort seems suited.
-        /*run it a number of times equal to the number of elements
-        ArrayList<Player> sortedPlayers = new ArrayList<Player>();
-        for (int i = 0; i < players.size() - 1; i++)  
-        {  
-            int index = i;  
-            for (int j = i + 1; j < players.size(); j++){  
-                if (players.get(j).score < players.get(index).score){  
-                    index = j;//searching for lowest index  
-                }  
-            }  
-            Player smallerScore = players.get(index);   
-            players.set(index, players.get(i));  
-            players.set(i, smallerScore);  
-        }*/
         //Bubble sort
         for(int i = 0; i < players.size(); i++){
             for(int j = 1; j < players.size()-i; j++){
@@ -143,6 +139,8 @@ public class GameController {
                 }
             }
         }
+        //rank them.
+        
         for(Player p:players){
             System.out.println(p.getType() + ", " + p.score);
         }
