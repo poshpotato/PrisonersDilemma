@@ -1,19 +1,11 @@
-
-/**
- * Write a description of class HumanPlayer here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-
+//the HumanPlayer class functions almost the same as a normal player, except that its checkBetray method uses user input to determine its result.
 import java.util.Scanner;
 public class HumanPlayer extends Player
 {
     String name;
     Scanner input;
-    /**
-     * Constructor for objects of class HumanPlayer
-     */
+    
+    //unlike other players, HumanPlayer gets a custom name and a direct connection to System.in.
     public HumanPlayer(String name){
         this.name = name;
         this.input = new Scanner(System.in);

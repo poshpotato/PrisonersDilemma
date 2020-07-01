@@ -1,35 +1,27 @@
-
-/**
- * Write a description of class Player here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
- 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
+//the default player clas
 public class Player {
     int score = 0;
+    //used to determine whether actual name should be used e.g. in non-human rounds.
     Boolean anonymous = false;
-    String getType(){if(!anonymous){return "bananapotato"; }else {return "Opponent";}};
-    ArrayList<Boolean> actions;//so opponent can respond.
-    Player(){
-        this.actions = new ArrayList<Boolean>();
-    }
-    //
-    Player(Player toCopy){
-        this.score = toCopy.score;
-        this.actions = toCopy.actions;
-    }
     
-    Boolean checkBetray(Player opponent, int round){ //will override.
+    //returns the name of the player as a string to be used in output
+    String getType(){if(!anonymous){return "Player"; }else {return "Opponent";}};
+    ArrayList<Boolean> actions;//so opponent can respond.
+    
+    //constructor, only used for placeholder players.
+    Player(){};
+    
+    //this function is overridden for all strategies.
+    Boolean checkBetray(Player opponent, int round){
         return true;
     }
-
+    
+    //this function should return a random-strategy player for use in the game. anonymous paremeter is for use in human games.
     static Player genPlayer(Boolean anonymous){
-        //this function should return a random-strategy player for use in the game
+        
         Player copy = new Player();
         switch (new Random().nextInt(4)){
             case 0 : 
@@ -51,6 +43,7 @@ public class Player {
         return copy;
     }
     
+    //this method uses a string to return the corresponding player type, and if invalid, generates a random one. Used for selecting opponents as human.
     static Player genPlayerFromString(String from){
         Player p = null;
         switch (from.toLowerCase()){
@@ -79,6 +72,8 @@ public class Player {
     }
 }
 
+//the two basic strategies, cheater and cooperator.
+
 class Cheater extends Player {
     Boolean checkBetray(Player opponent, int round) {
         return true; //cheater always cheats;
@@ -93,6 +88,7 @@ class Cooperator extends Player {
     String getType(){if(!anonymous){return "Cooperator"; }else {return "Opponent";}};
 }
 
+//the first "intelligent" strategy, the copycat starts with cooperation then always copies the opponent.
 class Copycat extends Player {
     Boolean checkBetray(Player opponent, int round) {
         if(round != 0){
@@ -102,9 +98,9 @@ class Copycat extends Player {
             //always start with good faith.
         }
     }
-    String getType(){if(!anonymous){return "bananapotato"; }else {return "Copycat";}};
+    String getType(){if(!anonymous){return "Copycat"; }else {return "Opponent";}};
 }
-//the checker probes you with a cheat to see whether you'll reciprocate, to decide what it should do.
+//the checker probes you with a cheat to see whether you'll reciprocate, to determine whether it should cheat you.
 class Checker extends Player {
     Boolean checkBetray(Player opponent, int round) {
         if(round == 0 || round == 2 || round == 3){
@@ -114,8 +110,8 @@ class Checker extends Player {
         } else if(opponent.actions.contains(true)) {
             return false; //lets try to cooperate
         } else {
-            return true; //bleed them for all they're worth
+            return true; //cheat them, they won't cheat back
         }
     }
-    String getType(){if(!anonymous){return "bananapotato"; }else {return "Opponent";}};
+    String getType(){if(!anonymous){return "Chceker"; }else {return "Opponent";}};
 }

@@ -1,9 +1,3 @@
-/**
- * Write a description of class GameController here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
 import java.util.*;
 import java.io.*;
 
@@ -15,6 +9,7 @@ public class GameController {
     static boolean silent = false;
     static int rounds = 5;
     static int tournamentPlayers = 10;
+    //opponent is always overridden except in case of a human player against random opponent, in which case the parameter should be true
     static Player opponent = Player.genPlayer(true);
     static HashMap<String, String> settings = new HashMap<String,String>();
     
@@ -146,6 +141,7 @@ public class GameController {
         }
     }
     
+    //this method reads the config file and sets each setting if possible. If undefined or invalid, it uses the default.
     static void readOptions(){
         File file = new File("config.txt");
         try{
@@ -158,26 +154,43 @@ public class GameController {
                 }
             }
             Boolean randomOpponent = true;
-            if(settings.get("rounds") != null)rounds = Integer.parseInt(settings.get("rounds"));
+            try{
+                if(settings.get("rounds") != null)rounds = Integer.parseInt(settings.get("rounds"));
+            }catch(Exception e){}
             System.out.println("Rounds: " +rounds);
-            if(settings.get("humanPlayer") != null)humanPlayer = Boolean.parseBoolean(settings.get("humanPlayer"));
-            System.out.println("humanPlayer: " +humanPlayer);
-            if(settings.get("randomRounds") != null) randomRounds = Boolean.parseBoolean(settings.get("randomRounds"));
-            System.out.println("randomRounds :" + randomRounds);
             
-            if(settings.get("tournamentMode") != null) tournamentMode = Boolean.parseBoolean(settings.get("tournamentMode"));
+            try{
+                if(settings.get("humanPlayer") != null)humanPlayer = Boolean.parseBoolean(settings.get("humanPlayer"));
+            }catch(Exception e){System.out.println("humanPlayer setting invalid");}
+            System.out.println("humanPlayer: " +humanPlayer);
+            try{
+                if(settings.get("randomRounds") != null) randomRounds = Boolean.parseBoolean(settings.get("randomRounds"));
+            }catch(Exception e){System.out.println("randomRounds setting invalid");}
+            System.out.println("randomRounds :" + randomRounds);
+            try{            
+                if(settings.get("tournamentMode") != null) tournamentMode = Boolean.parseBoolean(settings.get("tournamentMode"));
+            }catch(Exception e){System.out.println("tournamentMode setting invalid");}
             System.out.println("tournamentMode :" +tournamentMode);
-            if(settings.get("tournamentPlayers") != null)  tournamentPlayers = Integer.parseInt(settings.get("tournamentPlayers"));
+            try{
+                if(settings.get("tournamentPlayers") != null)  tournamentPlayers = Integer.parseInt(settings.get("tournamentPlayers"));
+            }catch(Exception e){System.out.println("tournamentPlayers invalid");}
             System.out.println("tournamentPlayers :" +tournamentPlayers);
-            if(settings.get("verbose") != null) silent = Boolean.parseBoolean(settings.get("verbose"));
-            silent = !silent;
+            try{
+                if(settings.get("verbose") != null) silent = Boolean.parseBoolean(settings.get("verbose"));
+                silent = !silent;
+            }catch(Exception e){System.out.println("Verbose setting invalid");}
             System.out.println("verbose :" + silent);
-            if(settings.get("randomOpponent") != null) randomOpponent = Boolean.parseBoolean(settings.get("randomOpponent"));
+            try{
+                if(settings.get("randomOpponent") != null) randomOpponent = Boolean.parseBoolean(settings.get("randomOpponent"));
+            }catch(Exception e){System.out.println("randomOpponent setting invalid");}
             System.out.println("randomOpponent :" + randomOpponent);
-            if(settings.get("opponentType") != null && randomOpponent){
-                opponent = Player.genPlayerFromString(settings.get("opponentType"));
-                System.out.println("opponent :" + opponent);
-            }
+            
+            try{
+                if(settings.get("opponentType") != null && !randomOpponent){
+                    opponent = Player.genPlayerFromString(settings.get("opponentType"));
+                    System.out.println("opponent :" + opponent);
+                }
+            }catch(Exception e){System.out.println("opponentType setting invalid");}
         }catch (IOException e){
             System.out.println("Error reading config: " + e.toString());
         }
