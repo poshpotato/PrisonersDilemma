@@ -57,9 +57,6 @@ public class Player {
                 p = new Copycat();
                 break;
                 
-                
-                
-                
             case "checker" :
                 p = new Copycat();
                 break;
@@ -113,5 +110,5 @@ class Checker extends Player {
             return true; //cheat them, they won't cheat back
         }
     }
-    String getType(){if(!anonymous){return "Chceker"; }else {return "Opponent";}};
+    String getType(){if(!anonymous){return "Checker"; }else {return "Opponent";}};
 }
